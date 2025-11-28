@@ -1,0 +1,13 @@
+# Factorial calculator using recursion
+# Demonstrates functions calling themselves
+
+praise factorial(n):
+   if n <= 1:
+      serve 1
+   beef
+
+   serve n * factorial(n - 1)
+beef
+
+# Calculate 5! = 5 * 4 * 3 * 2 * 1 = 120
+factorial(5)

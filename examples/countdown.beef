@@ -1,0 +1,10 @@
+# Countdown example - demonstrates loops and variables
+
+praise countdown(n):
+   feast while n > 0:
+      n = n - 1
+   beef
+   serve n
+beef
+
+prep result = countdown(10)

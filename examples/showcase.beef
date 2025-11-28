@@ -1,0 +1,53 @@
+# Beeflang Showcase - Demonstrates all language features!
+# This program shows variables, functions, loops, conditionals, and recursion
+
+# Recursive GCD (Greatest Common Divisor)
+praise gcd(a, b):
+   if b == 0:
+      serve a
+   beef
+   serve gcd(b, a % b)
+beef
+
+# Iterative sum from 1 to n
+praise sum_to_n(n):
+   prep total = 0
+   prep i = 1
+
+   feast while i <= n:
+      total = total + i
+      i = i + 1
+   beef
+
+   serve total
+beef
+
+# Power function (x^n)
+praise power(x, n):
+   if n == 0:
+      serve 1
+   beef
+
+   prep result = 1
+   prep count = 0
+
+   feast while count < n:
+      result = result * x
+      count = count + 1
+   beef
+
+   serve result
+beef
+
+# Main calculations
+# GCD of 48 and 18 should be 6
+prep result1 = gcd(48, 18)
+
+# Sum from 1 to 10 should be 55
+prep result2 = sum_to_n(10)
+
+# 2^10 should be 1024
+prep result3 = power(2, 10)
+
+# Return the final result
+result3

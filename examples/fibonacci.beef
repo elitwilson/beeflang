@@ -1,0 +1,27 @@
+# Fibonacci calculator - demonstrates Beeflang's Turing completeness!
+# This program calculates the nth Fibonacci number using iteration
+
+praise fibonacci(n):
+   # Handle base cases
+   if n <= 1:
+      serve n
+   beef
+
+   # Iterative calculation
+   prep a = 0
+   prep b = 1
+   prep i = 2
+
+   feast while i <= n:
+      prep temp = a + b
+      a = b
+      b = temp
+      i = i + 1
+   beef
+
+   serve b
+beef
+
+# Calculate the 10th Fibonacci number
+prep result = fibonacci(10)
+result

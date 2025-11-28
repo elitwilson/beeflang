@@ -1,0 +1,43 @@
+# Prime number checker
+# Shows loops, conditionals, and early returns
+
+praise is_prime(n):
+   # Handle edge cases
+   if n <= 1:
+      serve false
+   beef
+
+   if n <= 3:
+      serve true
+   beef
+
+   # Check if divisible by 2 or 3
+   if n % 2 == 0:
+      serve false
+   beef
+
+   if n % 3 == 0:
+      serve false
+   beef
+
+   # Check for divisors up to sqrt(n)
+   # Using i*i <= n instead of i <= sqrt(n) to avoid needing sqrt function
+   prep i = 5
+   feast while i * i <= n:
+      if n % i == 0:
+         serve false
+      beef
+
+      prep next = i + 2
+      if n % next == 0:
+         serve false
+      beef
+
+      i = i + 6
+   beef
+
+   serve true
+beef
+
+# Test: is 97 prime?
+is_prime(97)

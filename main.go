@@ -4,7 +4,10 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/elitwilson/beeflang/internal/evaluator"
 	"github.com/elitwilson/beeflang/internal/lexer"
+	"github.com/elitwilson/beeflang/internal/object"
+	"github.com/elitwilson/beeflang/internal/parser"
 	"github.com/elitwilson/beeflang/internal/token"
 )
 
@@ -51,7 +54,26 @@ func main() {
 		return
 	}
 
-	// Normal interpreter mode (not yet implemented)
-	fmt.Printf("Read %d bytes from %s\n", len(source), filename)
-	fmt.Println("Beeflang interpreter not yet implemented!")
+	// Normal interpreter mode - run the program!
+	l := lexer.New(string(source))
+	p := parser.New(l)
+	program := p.ParseProgram()
+
+	// Check for parser errors
+	if len(p.Errors()) > 0 {
+		fmt.Println("Parser errors:")
+		for _, msg := range p.Errors() {
+			fmt.Printf("  %s\n", msg)
+		}
+		os.Exit(1)
+	}
+
+	// Evaluate the program
+	env := object.NewEnvironment()
+	result := evaluator.Eval(program, env)
+
+	// Print the result if it's not NULL
+	if result != nil && result.Type() != "NULL" {
+		fmt.Println(result.Inspect())
+	}
 }

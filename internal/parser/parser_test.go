@@ -177,6 +177,24 @@ func TestParseVariableDeclaration(t *testing.T) {
 	testIntegerLiteral(t, varDecl.Value, 5)
 }
 
+func TestParseAssignmentStatement(t *testing.T) {
+	input := "x = 10"
+	l := lexer.New(input)
+	p := New(l)
+
+	program := p.ParseProgram()
+	checkParserErrors(t, p)
+
+	assert.Len(t, program.Statements, 1)
+
+	stmt := program.Statements[0]
+	assign, ok := stmt.(*ast.AssignmentStatement)
+	assert.True(t, ok, "statement should be *ast.AssignmentStatement")
+	assert.Equal(t, "x", assign.Name.Value)
+
+	testIntegerLiteral(t, assign.Value, 10)
+}
+
 func TestParseReturnStatement(t *testing.T) {
 	input := "serve 5"
 	l := lexer.New(input)
@@ -301,6 +319,26 @@ func TestParseIfElseStatementOneLine(t *testing.T) {
 	intLit, ok = exprStmt.Expression.(*ast.IntegerLiteral)
 	assert.True(t, ok, "alternative expression should be integer literal")
 	assert.Equal(t, int64(20), intLit.Value)
+}
+
+func TestParseWhileLoop(t *testing.T) {
+	input := `feast while x > 0:
+   x = x - 1
+beef`
+	l := lexer.New(input)
+	p := New(l)
+
+	program := p.ParseProgram()
+	checkParserErrors(t, p)
+
+	assert.Len(t, program.Statements, 1)
+
+	stmt := program.Statements[0]
+	whileLoop, ok := stmt.(*ast.WhileLoop)
+	assert.True(t, ok, "statement should be *ast.WhileLoop")
+	assert.NotNil(t, whileLoop.Condition)
+	assert.NotNil(t, whileLoop.Body)
+	assert.Len(t, whileLoop.Body.Statements, 1, "body should have 1 statement")
 }
 
 func TestParseFunctionDeclaration(t *testing.T) {
