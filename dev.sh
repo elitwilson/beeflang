@@ -25,6 +25,13 @@ case "$1" in
     go build -o beeflang main.go
     echo "Built: ./beeflang"
     ;;
+  lex)
+    if [ -z "$2" ]; then
+      echo "Usage: ./dev.sh lex <file.beef>"
+      exit 1
+    fi
+    go run main.go --dump-tokens "$2"
+    ;;
   clean)
     rm -f beeflang
     echo "Cleaned build artifacts"
@@ -32,6 +39,7 @@ case "$1" in
   *)
     echo "Beeflang Dev Commands:"
     echo "  ./dev.sh run <file.beef>  - Run a Beeflang program"
+    echo "  ./dev.sh lex <file.beef>  - Dump tokens from lexer (debug)"
     echo "  ./dev.sh test             - Run all tests"
     echo "  ./dev.sh test-pkg <pkg>   - Run tests for specific package"
     echo "  ./dev.sh build            - Build beeflang binary"
