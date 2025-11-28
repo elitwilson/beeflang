@@ -13,24 +13,27 @@ Beef-themed keywords with religious overtones. Syntax should be humorous but mak
 - `beef` - block terminator (end of function/loop/conditional)
 - `feast while` - while loop
 - `if` / `else` - conditionals
-- `cut` - variable declaration
+- `prep` - variable declaration (mutable)
 - `serve` - return statement
 - `genesis` - entry point (main function)
-- `preach` - print/output function
+- `wrangle` - import/load a module
+- `herd` - module/namespace
 
 **Current Syntax:**
 ```
+wrangle io
+
 praise genesis():
-   cut x = 42
-   preach(x)
-   
+   prep x = 42
+   io.preach(x)
+
    if x > 0:
-      cut y = 5
+      prep y = 5
    beef
-   
+
    feast while x > 0:
-      preach(x)
-      cut x = x - 1
+      io.preach(x)
+      x = x - 1
    beef
 beef
 ```
@@ -80,7 +83,7 @@ beef
 - [x] Keywords: `if` / `else`
 
 ### 2. ~~Variables~~ ✓
-- [x] Variable declaration: `cut`
+- [x] Variable declaration: `prep`
 - [x] Scope rules: Block-level scoping
 
 ### 3. ~~Return Statement~~ ✓
@@ -95,8 +98,14 @@ beef
 ### 6. ~~Entry Point~~ ✓
 - [x] `genesis` - main function
 
-### 7. ~~Basic I/O~~ ✓
-- [x] `preach` - print/output
+### 7. Module System
+- [ ] Keywords: `wrangle` (import), `herd` (module)
+- [ ] Dot notation for member access: `module.function()`
+- [ ] Standard library modules
+
+### 8. Basic I/O (via stdlib)
+- [ ] `io.preach()` - print/output
+- [ ] `io.input()` - read input
 
 ---
 
@@ -114,31 +123,39 @@ beef
 - **Single-line**: `#` (Python-style)
   ```
   # This is a comment
-  cut x = 5  # inline comment
+  prep x = 5  # inline comment
   ```
+
+### Module System
+- **Import syntax**: `wrangle <module_name>`
+- **Member access**: `module.member` (dot notation)
+- **Module keyword**: `herd` (for defining modules)
+- Modules are namespaces containing functions and values
 
 ---
 
 ## Complete Example
 
 ```beeflang
+wrangle io
+
 # Calculate factorial recursively
 praise factorial(n):
    if n <= 1:
       serve 1
    beef
 
-   cut result = n * factorial(n - 1)
+   prep result = n * factorial(n - 1)
    serve result
 beef
 
 praise genesis():
-   preach("Welcome to the Church of Beef!")
+   io.preach("Welcome to the Church of Beef!")
 
-   cut num = 5
-   cut answer = factorial(num)
-   cut message = "The answer is: " + answer
-   preach(message)  # outputs: The answer is: 120
+   prep num = 5
+   prep answer = factorial(num)
+   io.preach("Factorial of 5 is:")
+   io.preach(answer)  # outputs: 120
 beef
 ```
 
@@ -174,7 +191,6 @@ beef
 #### Data/Variables
 - `offering` - variable declaration
 - `sacred` - constant declaration
-- `herd` - array/list
 - `congregation` - object/struct
 - `scripture` - string type
 
@@ -186,8 +202,9 @@ beef
 #### Functions
 - `blessing` - return statement
 
-#### Module System
-- `summon` - import/include
+#### Module System (AGREED - moved to main spec)
+- `wrangle` - import/include ✓
+- `herd` - module/namespace ✓
 - `banish` - delete/remove
 
 #### Other
@@ -198,5 +215,5 @@ beef
 ### Other Ideas
 
 #### Immutable vs Mutable variables
-- Mutable: `cut` (v1)
+- Mutable: `prep` (v1 - CURRENT)
 - Immutable: `pack` (v2 - later)
