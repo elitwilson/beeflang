@@ -1,6 +1,5 @@
 # Hello, Beef! - A simple Beeflang program
+# Returns the answer to life, the universe, and everything
 
-praise genesis():
-   prep message = 42
-   preach(message)
-beef
+prep answer = 42
+answer

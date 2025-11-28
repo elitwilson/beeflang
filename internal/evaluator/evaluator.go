@@ -44,11 +44,17 @@ func Eval(node ast.Node, env *Environment) object.Object {
 		env.Set(n.Name.Value, val)
 		return val
 
+	case *ast.AssignmentStatement:
+		return evalAssignmentStatement(n, env)
+
 	case *ast.BlockStatement:
 		return evalBlockStatement(n, env)
 
 	case *ast.IfStatement:
 		return evalIfStatement(n, env)
+
+	case *ast.WhileLoop:
+		return evalWhileLoop(n, env)
 
 	case *ast.FunctionDeclaration:
 		return evalFunctionDeclaration(n, env)
@@ -311,6 +317,35 @@ func evalExpressions(exps []ast.Expression, env *Environment) []object.Object {
 	for _, exp := range exps {
 		evaluated := Eval(exp, env)
 		result = append(result, evaluated)
+	}
+
+	return result
+}
+
+// evalAssignmentStatement handles variable reassignment (x = value)
+func evalAssignmentStatement(stmt *ast.AssignmentStatement, env *Environment) object.Object {
+	val := Eval(stmt.Value, env)
+	env.Set(stmt.Name.Value, val)
+	return val
+}
+
+// evalWhileLoop handles while loops: feast while condition: body beef
+func evalWhileLoop(loop *ast.WhileLoop, env *Environment) object.Object {
+	var result object.Object = object.NULL
+
+	for {
+		condition := Eval(loop.Condition, env)
+
+		if !isTruthy(condition) {
+			break
+		}
+
+		result = Eval(loop.Body, env)
+
+		// Check for early return from within the loop
+		if result != nil && result.Type() == "RETURN_VALUE" {
+			return result
+		}
 	}
 
 	return result

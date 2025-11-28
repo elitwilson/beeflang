@@ -54,6 +54,33 @@ func TestTokenizeStringLiterals(t *testing.T) {
 	}
 }
 
+func TestTokenizeIdentifiersWithDigits(t *testing.T) {
+	// Identifiers can contain digits (but not start with them)
+	tests := []struct {
+		input    string
+		expected string
+	}{
+		{"result1", "result1"},
+		{"var2", "var2"},
+		{"test123", "test123"},
+		{"a1b2c3", "a1b2c3"},
+		{"sum_to_n", "sum_to_n"},
+		{"value_42", "value_42"},
+	}
+
+	for _, tt := range tests {
+		l := New(tt.input)
+		tok := l.NextToken()
+
+		assert.Equal(t, token.IDENT, tok.Type, "Input: %s should be IDENT", tt.input)
+		assert.Equal(t, tt.expected, tok.Literal, "Input: %s literal mismatch", tt.input)
+
+		// Should be followed by EOF, not another token
+		tok = l.NextToken()
+		assert.Equal(t, token.EOF, tok.Type, "Input: %s should be followed by EOF", tt.input)
+	}
+}
+
 func TestTokenizeKeywords(t *testing.T) {
 	input := "prep praise beef genesis serve if else"
 	l := New(input)

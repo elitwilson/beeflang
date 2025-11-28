@@ -88,7 +88,7 @@ type InfixExpression struct {
 func (ie *InfixExpression) expressionNode()      {}
 func (ie *InfixExpression) TokenLiteral() string { return ie.Token.Literal }
 
-// VariableDeclaration represents: cut x = 42
+// VariableDeclaration represents: prep x = 42
 type VariableDeclaration struct {
 	Token token.Token
 	Name  *Identifier
@@ -97,6 +97,16 @@ type VariableDeclaration struct {
 
 func (vd *VariableDeclaration) statementNode()       {}
 func (vd *VariableDeclaration) TokenLiteral() string { return vd.Token.Literal }
+
+// AssignmentStatement represents: x = 42 (reassignment, no prep keyword)
+type AssignmentStatement struct {
+	Token token.Token // The identifier token
+	Name  *Identifier
+	Value Expression
+}
+
+func (as *AssignmentStatement) statementNode()       {}
+func (as *AssignmentStatement) TokenLiteral() string { return as.Token.Literal }
 
 // ReturnStatement represents: serve x
 type ReturnStatement struct {
@@ -117,6 +127,16 @@ type IfStatement struct {
 
 func (is *IfStatement) statementNode()       {}
 func (is *IfStatement) TokenLiteral() string { return is.Token.Literal }
+
+// WhileLoop represents: feast while condition: body beef
+type WhileLoop struct {
+	Token     token.Token // The 'feast' or 'while' token
+	Condition Expression
+	Body      *BlockStatement
+}
+
+func (wl *WhileLoop) statementNode()       {}
+func (wl *WhileLoop) TokenLiteral() string { return wl.Token.Literal }
 
 // FunctionDeclaration represents: praise name(params): body beef
 type FunctionDeclaration struct {

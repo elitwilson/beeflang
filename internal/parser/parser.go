@@ -134,6 +134,14 @@ func (p *Parser) parseStatement() ast.Statement {
 		return p.parseIfStatement()
 	case token.PRAISE:
 		return p.parseFunctionDeclaration()
+	case token.FEAST_WHILE:
+		return p.parseWhileLoop()
+	case token.IDENT:
+		// Check if this is an assignment (x = value) or expression statement
+		if p.peekTokenIs(token.ASSIGN) {
+			return p.parseAssignmentStatement()
+		}
+		return p.parseExpressionStatement()
 	default:
 		return p.parseExpressionStatement()
 	}
@@ -405,13 +413,14 @@ func (p *Parser) expectPeek(t token.TokenType) bool {
 }
 
 func (p *Parser) peekError(t token.TokenType) {
-	msg := fmt.Sprintf("expected next token to be %s, got %s instead",
-		t, p.peekToken.Type)
+	msg := fmt.Sprintf("[line %d, col %d] expected next token to be %s, got %s instead",
+		p.peekToken.Line, p.peekToken.Column, t, p.peekToken.Type)
 	p.errors = append(p.errors, msg)
 }
 
 func (p *Parser) noPrefixParseFnError(t token.TokenType) {
-	msg := fmt.Sprintf("no prefix parse function for %s found", t)
+	msg := fmt.Sprintf("[line %d, col %d] no prefix parse function for %s found",
+		p.curToken.Line, p.curToken.Column, t)
 	p.errors = append(p.errors, msg)
 }
 
@@ -435,4 +444,39 @@ func (p *Parser) registerPrefix(tokenType token.TokenType, fn prefixParseFn) {
 
 func (p *Parser) registerInfix(tokenType token.TokenType, fn infixParseFn) {
 	p.infixParseFns[tokenType] = fn
+}
+
+func (p *Parser) parseAssignmentStatement() *ast.AssignmentStatement {
+	stmt := &ast.AssignmentStatement{Token: p.curToken}
+	stmt.Name = &ast.Identifier{Token: p.curToken, Value: p.curToken.Literal}
+
+	if !p.expectPeek(token.ASSIGN) {
+		return nil
+	}
+
+	p.nextToken()
+	stmt.Value = p.parseExpression(LOWEST)
+
+	return stmt
+}
+
+func (p *Parser) parseWhileLoop() *ast.WhileLoop {
+	stmt := &ast.WhileLoop{Token: p.curToken}
+
+	// Handle "feast while" - if current is FEAST_WHILE, check if next is also WHILE
+	// This allows both "feast while" and just "while"
+	if p.curTokenIs(token.FEAST_WHILE) && p.peekTokenIs(token.FEAST_WHILE) {
+		p.nextToken() // consume the second token
+	}
+
+	p.nextToken()
+	stmt.Condition = p.parseExpression(LOWEST)
+
+	if !p.expectPeek(token.COLON) {
+		return nil
+	}
+
+	stmt.Body = p.parseBlockStatement()
+
+	return stmt
 }

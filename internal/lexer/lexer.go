@@ -166,10 +166,11 @@ func (l *Lexer) peekChar() byte {
 	return l.input[l.readPosition]
 }
 
-// readIdentifier reads an identifier or keyword (letters and underscores)
+// readIdentifier reads an identifier or keyword (letters, underscores, and digits)
+// Identifiers must start with a letter or underscore, but can contain digits after that
 func (l *Lexer) readIdentifier() string {
 	position := l.position
-	for isLetter(l.ch) {
+	for isLetter(l.ch) || isDigit(l.ch) {
 		l.readChar()
 	}
 	return l.input[position:l.position]
