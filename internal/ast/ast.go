@@ -176,3 +176,22 @@ type ExpressionStatement struct {
 
 func (es *ExpressionStatement) statementNode()       {}
 func (es *ExpressionStatement) TokenLiteral() string { return es.Token.Literal }
+
+// WrangleStatement represents: wrangle modulename
+type WrangleStatement struct {
+	Token      token.Token // The 'wrangle' token
+	ModuleName *Identifier
+}
+
+func (ws *WrangleStatement) statementNode()       {}
+func (ws *WrangleStatement) TokenLiteral() string { return ws.Token.Literal }
+
+// MemberAccessExpression represents: object.member (like io.preach)
+type MemberAccessExpression struct {
+	Token  token.Token // The '.' token
+	Object Expression  // The left side (usually an identifier like 'io')
+	Member *Identifier // The right side (the member name like 'preach')
+}
+
+func (ma *MemberAccessExpression) expressionNode()      {}
+func (ma *MemberAccessExpression) TokenLiteral() string { return ma.Token.Literal }

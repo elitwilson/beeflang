@@ -428,3 +428,79 @@ func testIntegerLiteral(t *testing.T, exp ast.Expression, value int64) {
 	assert.True(t, ok, "expression should be *ast.IntegerLiteral, got %T", exp)
 	assert.Equal(t, value, intLit.Value)
 }
+
+// ========================================
+// Module System Tests
+// ========================================
+
+func TestParseWrangleStatement(t *testing.T) {
+	input := "wrangle io"
+	l := lexer.New(input)
+	p := New(l)
+
+	program := p.ParseProgram()
+	checkParserErrors(t, p)
+
+	assert.Len(t, program.Statements, 1, "program should have 1 statement")
+
+	stmt, ok := program.Statements[0].(*ast.WrangleStatement)
+	assert.True(t, ok, "statement should be *ast.WrangleStatement, got %T", program.Statements[0])
+	assert.Equal(t, "io", stmt.ModuleName.Value)
+}
+
+func TestParseMemberAccessExpression(t *testing.T) {
+	input := "io.preach"
+	l := lexer.New(input)
+	p := New(l)
+
+	program := p.ParseProgram()
+	checkParserErrors(t, p)
+
+	assert.Len(t, program.Statements, 1, "program should have 1 statement")
+
+	stmt, ok := program.Statements[0].(*ast.ExpressionStatement)
+	assert.True(t, ok, "statement should be *ast.ExpressionStatement")
+
+	memberAccess, ok := stmt.Expression.(*ast.MemberAccessExpression)
+	assert.True(t, ok, "expression should be *ast.MemberAccessExpression, got %T", stmt.Expression)
+
+	// Check object (left side)
+	obj, ok := memberAccess.Object.(*ast.Identifier)
+	assert.True(t, ok, "object should be *ast.Identifier")
+	assert.Equal(t, "io", obj.Value)
+
+	// Check member (right side)
+	assert.Equal(t, "preach", memberAccess.Member.Value)
+}
+
+func TestParseModuleFunctionCall(t *testing.T) {
+	input := "io.preach(42)"
+	l := lexer.New(input)
+	p := New(l)
+
+	program := p.ParseProgram()
+	checkParserErrors(t, p)
+
+	assert.Len(t, program.Statements, 1, "program should have 1 statement")
+
+	stmt, ok := program.Statements[0].(*ast.ExpressionStatement)
+	assert.True(t, ok, "statement should be *ast.ExpressionStatement")
+
+	// The call expression wraps the member access
+	call, ok := stmt.Expression.(*ast.FunctionCall)
+	assert.True(t, ok, "expression should be *ast.FunctionCall, got %T", stmt.Expression)
+
+	// The function being called is a member access expression
+	memberAccess, ok := call.Function.(*ast.MemberAccessExpression)
+	assert.True(t, ok, "function should be *ast.MemberAccessExpression, got %T", call.Function)
+
+	// Check object.member
+	obj, ok := memberAccess.Object.(*ast.Identifier)
+	assert.True(t, ok, "object should be *ast.Identifier")
+	assert.Equal(t, "io", obj.Value)
+	assert.Equal(t, "preach", memberAccess.Member.Value)
+
+	// Check argument
+	assert.Len(t, call.Arguments, 1, "should have 1 argument")
+	testIntegerLiteral(t, call.Arguments[0], 42)
+}

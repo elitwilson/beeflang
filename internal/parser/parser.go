@@ -21,6 +21,7 @@ const (
 	PRODUCT     // *
 	PREFIX      // -X or !X
 	CALL        // myFunction(X)
+	MEMBER      // object.member
 )
 
 var precedences = map[token.TokenType]int{
@@ -36,6 +37,7 @@ var precedences = map[token.TokenType]int{
 	token.ASTERISK: PRODUCT,
 	token.PERCENT:  PRODUCT,
 	token.LPAREN:   CALL,
+	token.DOT:      MEMBER,
 }
 
 // Parser uses Pratt parsing (top-down operator precedence) to build an AST.
@@ -95,6 +97,7 @@ func New(l *lexer.Lexer) *Parser {
 	p.registerInfix(token.LTE, p.parseInfixExpression)
 	p.registerInfix(token.GTE, p.parseInfixExpression)
 	p.registerInfix(token.LPAREN, p.parseFunctionCall)
+	p.registerInfix(token.DOT, p.parseMemberAccessExpression)
 
 	// Read two tokens to initialize curToken and peekToken
 	p.nextToken()
@@ -136,6 +139,8 @@ func (p *Parser) parseStatement() ast.Statement {
 		return p.parseFunctionDeclaration()
 	case token.FEAST_WHILE:
 		return p.parseWhileLoop()
+	case token.WRANGLE:
+		return p.parseWrangleStatement()
 	case token.IDENT:
 		// Check if this is an assignment (x = value) or expression statement
 		if p.peekTokenIs(token.ASSIGN) {
@@ -479,4 +484,37 @@ func (p *Parser) parseWhileLoop() *ast.WhileLoop {
 	stmt.Body = p.parseBlockStatement()
 
 	return stmt
+}
+
+func (p *Parser) parseWrangleStatement() *ast.WrangleStatement {
+	stmt := &ast.WrangleStatement{Token: p.curToken}
+
+	if !p.expectPeek(token.IDENT) {
+		return nil
+	}
+
+	stmt.ModuleName = &ast.Identifier{
+		Token: p.curToken,
+		Value: p.curToken.Literal,
+	}
+
+	return stmt
+}
+
+func (p *Parser) parseMemberAccessExpression(left ast.Expression) ast.Expression {
+	expr := &ast.MemberAccessExpression{
+		Token:  p.curToken, // The DOT token
+		Object: left,
+	}
+
+	if !p.expectPeek(token.IDENT) {
+		return nil
+	}
+
+	expr.Member = &ast.Identifier{
+		Token: p.curToken,
+		Value: p.curToken.Literal,
+	}
+
+	return expr
 }
