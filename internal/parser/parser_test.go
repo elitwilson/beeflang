@@ -211,7 +211,96 @@ beef`
 	assert.True(t, ok, "statement should be *ast.IfStatement")
 	assert.NotNil(t, ifStmt.Condition)
 	assert.NotNil(t, ifStmt.Consequence)
-	assert.Len(t, ifStmt.Consequence.Statements, 1)
+	assert.Len(t, ifStmt.Consequence.Statements, 1, "consequence should have exactly 1 statement")
+	assert.Nil(t, ifStmt.Alternative, "should have no alternative (else) block")
+}
+
+func TestParseIfStatementOneLine(t *testing.T) {
+	input := "if true: 10 beef"
+	l := lexer.New(input)
+	p := New(l)
+
+	program := p.ParseProgram()
+	checkParserErrors(t, p)
+
+	assert.Len(t, program.Statements, 1)
+
+	ifStmt, ok := program.Statements[0].(*ast.IfStatement)
+	assert.True(t, ok, "statement should be *ast.IfStatement")
+
+	// Check condition
+	boolLit, ok := ifStmt.Condition.(*ast.BooleanLiteral)
+	assert.True(t, ok, "condition should be boolean literal")
+	assert.True(t, boolLit.Value)
+
+	// Check consequence has exactly 1 statement
+	assert.NotNil(t, ifStmt.Consequence)
+	assert.Len(t, ifStmt.Consequence.Statements, 1, "consequence should have exactly 1 statement")
+
+	// Check no alternative
+	assert.Nil(t, ifStmt.Alternative, "should have no alternative (else) block")
+}
+
+func TestParseIfElseStatement(t *testing.T) {
+	input := `if x < 5:
+   cut a = 1
+else:
+   cut b = 2
+beef`
+	l := lexer.New(input)
+	p := New(l)
+
+	program := p.ParseProgram()
+	checkParserErrors(t, p)
+
+	assert.Len(t, program.Statements, 1)
+
+	ifStmt, ok := program.Statements[0].(*ast.IfStatement)
+	assert.True(t, ok, "statement should be *ast.IfStatement")
+
+	// Check consequence
+	assert.NotNil(t, ifStmt.Consequence)
+	assert.Len(t, ifStmt.Consequence.Statements, 1, "consequence should have exactly 1 statement")
+
+	// Check alternative exists
+	assert.NotNil(t, ifStmt.Alternative, "should have alternative (else) block")
+	assert.Len(t, ifStmt.Alternative.Statements, 1, "alternative should have exactly 1 statement")
+}
+
+func TestParseIfElseStatementOneLine(t *testing.T) {
+	input := "if 1 < 2: 10 else: 20 beef"
+	l := lexer.New(input)
+	p := New(l)
+
+	program := p.ParseProgram()
+	checkParserErrors(t, p)
+
+	assert.Len(t, program.Statements, 1)
+
+	ifStmt, ok := program.Statements[0].(*ast.IfStatement)
+	assert.True(t, ok, "statement should be *ast.IfStatement")
+
+	// Check consequence has exactly 1 statement (should be "10", not "10 else : 20")
+	assert.NotNil(t, ifStmt.Consequence)
+	assert.Len(t, ifStmt.Consequence.Statements, 1, "consequence should have exactly 1 statement, not consuming else")
+
+	// Verify consequence is the integer 10
+	exprStmt, ok := ifStmt.Consequence.Statements[0].(*ast.ExpressionStatement)
+	assert.True(t, ok, "consequence statement should be expression statement")
+	intLit, ok := exprStmt.Expression.(*ast.IntegerLiteral)
+	assert.True(t, ok, "consequence expression should be integer literal")
+	assert.Equal(t, int64(10), intLit.Value)
+
+	// Check alternative exists and has exactly 1 statement
+	assert.NotNil(t, ifStmt.Alternative, "should have alternative (else) block")
+	assert.Len(t, ifStmt.Alternative.Statements, 1, "alternative should have exactly 1 statement")
+
+	// Verify alternative is the integer 20
+	exprStmt, ok = ifStmt.Alternative.Statements[0].(*ast.ExpressionStatement)
+	assert.True(t, ok, "alternative statement should be expression statement")
+	intLit, ok = exprStmt.Expression.(*ast.IntegerLiteral)
+	assert.True(t, ok, "alternative expression should be integer literal")
+	assert.Equal(t, int64(20), intLit.Value)
 }
 
 func TestParseFunctionDeclaration(t *testing.T) {

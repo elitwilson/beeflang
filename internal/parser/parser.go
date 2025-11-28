@@ -182,9 +182,8 @@ func (p *Parser) parseIfStatement() *ast.IfStatement {
 	stmt.Consequence = p.parseBlockStatement()
 
 	// Optional else block
-	if p.peekTokenIs(token.ELSE) {
-		p.nextToken()
-
+	// After parseBlockStatement(), we're sitting on the terminator (either ELSE or BEEF)
+	if p.curTokenIs(token.ELSE) {
 		if !p.expectPeek(token.COLON) {
 			return nil
 		}
@@ -252,7 +251,8 @@ func (p *Parser) parseBlockStatement() *ast.BlockStatement {
 
 	p.nextToken()
 
-	for !p.curTokenIs(token.BEEF) && !p.curTokenIs(token.EOF) {
+	// Stop at beef (end of block), else (if in consequence of if statement), or EOF
+	for !p.curTokenIs(token.BEEF) && !p.curTokenIs(token.ELSE) && !p.curTokenIs(token.EOF) {
 		stmt := p.parseStatement()
 		if stmt != nil {
 			block.Statements = append(block.Statements, stmt)
