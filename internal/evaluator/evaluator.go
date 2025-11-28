@@ -1,6 +1,10 @@
 package evaluator
 
 import (
+	"bufio"
+	"fmt"
+	"os"
+
 	"github.com/elitwilson/beeflang/internal/ast"
 	"github.com/elitwilson/beeflang/internal/object"
 )
@@ -64,6 +68,12 @@ func Eval(node ast.Node, env *Environment) object.Object {
 
 	case *ast.FunctionCall:
 		return evalFunctionCall(n, env)
+
+	case *ast.WrangleStatement:
+		return evalWrangleStatement(n, env)
+
+	case *ast.MemberAccessExpression:
+		return evalMemberAccessExpression(n, env)
 
 	// Expression statement: evaluate the expression
 	case *ast.ExpressionStatement:
@@ -277,17 +287,23 @@ func evalReturnStatement(stmt *ast.ReturnStatement, env *Environment) object.Obj
 
 // evalFunctionCall evaluates a function call expression
 func evalFunctionCall(call *ast.FunctionCall, env *Environment) object.Object {
-	// Evaluate the function expression (usually an identifier)
+	// Evaluate the function expression (usually an identifier or member access)
 	function := Eval(call.Function, env)
 
+	// Evaluate all arguments
+	args := evalExpressions(call.Arguments, env)
+
+	// Check if it's a builtin function
+	if builtin, ok := function.(*object.Builtin); ok {
+		return builtin.Fn(args...)
+	}
+
+	// Check if it's a user-defined function
 	fn, ok := function.(*object.Function)
 	if !ok {
 		// Not a function - error
 		return object.NULL
 	}
-
-	// Evaluate all arguments
-	args := evalExpressions(call.Arguments, env)
 
 	// Create new environment for function execution (enclosed by function's closure env)
 	fnEnv := object.NewEnclosedEnvironment(fn.Env)
@@ -349,4 +365,82 @@ func evalWhileLoop(loop *ast.WhileLoop, env *Environment) object.Object {
 	}
 
 	return result
+}
+
+func evalWrangleStatement(stmt *ast.WrangleStatement, env *Environment) object.Object {
+	// Load module by name
+	moduleName := stmt.ModuleName.Value
+	mod := loadModule(moduleName)
+
+	// Store module in environment
+	env.Set(moduleName, mod)
+
+	return mod
+}
+
+func evalMemberAccessExpression(expr *ast.MemberAccessExpression, env *Environment) object.Object {
+	// Evaluate the object (left side)
+	obj := Eval(expr.Object, env)
+
+	// Check if it's a module
+	if mod, ok := obj.(*object.Module); ok {
+		member, found := mod.Get(expr.Member.Value)
+		if !found {
+			return object.NULL
+		}
+		return member
+	}
+
+	return object.NULL
+}
+
+// loadModule creates and returns a module by name
+// For now, this is hardcoded - later we can make it extensible
+func loadModule(name string) *object.Module {
+	switch name {
+	case "io":
+		return createIOModule()
+	default:
+		// Return empty module for unknown modules
+		return &object.Module{
+			Name:    name,
+			Members: make(map[string]object.Object),
+		}
+	}
+}
+
+func createIOModule() *object.Module {
+	mod := &object.Module{
+		Name:    "io",
+		Members: make(map[string]object.Object),
+	}
+
+	// preach - print to stdout with newline
+	mod.Set("preach", &object.Builtin{
+		Fn: func(args ...object.Object) object.Object {
+			for _, arg := range args {
+				fmt.Println(arg.Inspect())
+			}
+			return object.NULL
+		},
+	})
+
+	// input - read line from stdin
+	mod.Set("input", &object.Builtin{
+		Fn: func(args ...object.Object) object.Object {
+			// Optional: first argument is prompt
+			if len(args) > 0 {
+				fmt.Print(args[0].Inspect())
+			}
+
+			scanner := bufio.NewScanner(os.Stdin)
+			if scanner.Scan() {
+				return &object.String{Value: scanner.Text()}
+			}
+
+			return &object.String{Value: ""}
+		},
+	})
+
+	return mod
 }
