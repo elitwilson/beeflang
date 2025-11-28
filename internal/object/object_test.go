@@ -14,6 +14,8 @@ func TestObjectInterface(t *testing.T) {
 	var _ Object = &Boolean{}
 	var _ Object = &String{}
 	var _ Object = &Null{}
+	var _ Object = &Module{}
+	var _ Object = &Builtin{}
 }
 
 func TestIntegerTypeAndInspect(t *testing.T) {
@@ -96,4 +98,83 @@ func TestNullIsUnique(t *testing.T) {
 	null2 := NULL
 
 	assert.Equal(t, null1, null2, "NULL should be a singleton")
+}
+
+// ========================================
+// Module System Object Tests
+// ========================================
+
+func TestModuleTypeAndInspect(t *testing.T) {
+	mod := &Module{
+		Name:    "io",
+		Members: make(map[string]Object),
+	}
+
+	assert.Equal(t, "MODULE", mod.Type())
+	assert.Equal(t, "<module 'io'>", mod.Inspect())
+}
+
+func TestModuleGetMember(t *testing.T) {
+	mod := &Module{
+		Name:    "io",
+		Members: make(map[string]Object),
+	}
+
+	// Add a member
+	testVal := &Integer{Value: 42}
+	mod.Members["test"] = testVal
+
+	// Get should retrieve it
+	result, ok := mod.Get("test")
+	assert.True(t, ok, "Get should return true when member exists")
+	assert.Equal(t, testVal, result)
+
+	// Get non-existent member
+	_, ok = mod.Get("nonexistent")
+	assert.False(t, ok, "Get should return false when member doesn't exist")
+}
+
+func TestModuleSetMember(t *testing.T) {
+	mod := &Module{
+		Name:    "io",
+		Members: make(map[string]Object),
+	}
+
+	// Set a member
+	testVal := &Integer{Value: 42}
+	mod.Set("test", testVal)
+
+	// Verify it was stored
+	result, ok := mod.Members["test"]
+	assert.True(t, ok)
+	assert.Equal(t, testVal, result)
+}
+
+func TestBuiltinTypeAndInspect(t *testing.T) {
+	builtin := &Builtin{
+		Fn: func(args ...Object) Object {
+			return NULL
+		},
+	}
+
+	assert.Equal(t, "BUILTIN", builtin.Type())
+	assert.Equal(t, "<builtin>", builtin.Inspect())
+}
+
+func TestBuiltinFunction(t *testing.T) {
+	// Create a builtin that returns the first argument
+	builtin := &Builtin{
+		Fn: func(args ...Object) Object {
+			if len(args) > 0 {
+				return args[0]
+			}
+			return NULL
+		},
+	}
+
+	// Call it
+	arg := &Integer{Value: 42}
+	result := builtin.Fn(arg)
+
+	assert.Equal(t, arg, result)
 }

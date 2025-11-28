@@ -159,3 +159,43 @@ var (
 	TRUE  = &Boolean{Value: true}
 	FALSE = &Boolean{Value: false}
 )
+
+// Module represents a module/namespace containing functions and values.
+// Used for organizing standard library and user modules (e.g., io.preach).
+type Module struct {
+	Name    string
+	Members map[string]Object
+}
+
+func (m *Module) Type() string {
+	return "MODULE"
+}
+
+func (m *Module) Inspect() string {
+	return fmt.Sprintf("<module '%s'>", m.Name)
+}
+
+// Get retrieves a member from the module by name.
+func (m *Module) Get(name string) (Object, bool) {
+	obj, ok := m.Members[name]
+	return obj, ok
+}
+
+// Set stores a member in the module by name.
+func (m *Module) Set(name string, val Object) {
+	m.Members[name] = val
+}
+
+// Builtin represents a built-in function implemented in Go.
+// The Fn field is a Go function that takes Object arguments and returns an Object.
+type Builtin struct {
+	Fn func(args ...Object) Object
+}
+
+func (b *Builtin) Type() string {
+	return "BUILTIN"
+}
+
+func (b *Builtin) Inspect() string {
+	return "<builtin>"
+}
