@@ -21,6 +21,44 @@ func TestIntegerLiteralNode(t *testing.T) {
 	var _ Expression = intLiteral
 }
 
+func TestBooleanLiteralNode(t *testing.T) {
+	trueTok := token.Token{Type: token.TRUE, Literal: "true", Line: 1, Column: 1}
+	trueLiteral := &BooleanLiteral{
+		Token: trueTok,
+		Value: true,
+	}
+
+	assert.Equal(t, "true", trueLiteral.TokenLiteral())
+	assert.Equal(t, true, trueLiteral.Value)
+
+	falseTok := token.Token{Type: token.FALSE, Literal: "false", Line: 1, Column: 1}
+	falseLiteral := &BooleanLiteral{
+		Token: falseTok,
+		Value: false,
+	}
+
+	assert.Equal(t, "false", falseLiteral.TokenLiteral())
+	assert.Equal(t, false, falseLiteral.Value)
+
+	// Verify it implements Expression interface
+	var _ Expression = trueLiteral
+	var _ Expression = falseLiteral
+}
+
+func TestStringLiteralNode(t *testing.T) {
+	tok := token.Token{Type: token.STRING, Literal: "Hello, Beef!", Line: 1, Column: 1}
+	strLiteral := &StringLiteral{
+		Token: tok,
+		Value: "Hello, Beef!",
+	}
+
+	assert.Equal(t, "Hello, Beef!", strLiteral.TokenLiteral())
+	assert.Equal(t, "Hello, Beef!", strLiteral.Value)
+
+	// Verify it implements Expression interface
+	var _ Expression = strLiteral
+}
+
 func TestIdentifierNode(t *testing.T) {
 	tok := token.Token{Type: token.IDENT, Literal: "foo", Line: 1, Column: 1}
 	ident := &Identifier{

@@ -17,8 +17,9 @@ const (
 	EOF     TokenType = "EOF"
 
 	// Identifiers and literals
-	IDENT TokenType = "IDENT" // variable names, function names
-	INT   TokenType = "INT"   // integer literals
+	IDENT  TokenType = "IDENT"  // variable names, function names
+	INT    TokenType = "INT"    // integer literals
+	STRING TokenType = "STRING" // string literals
 
 	// Operators
 	ASSIGN   TokenType = "="

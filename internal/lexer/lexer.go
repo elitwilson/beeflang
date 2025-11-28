@@ -63,6 +63,8 @@ func (l *Lexer) NextToken() token.Token {
 		tok = l.newToken(token.ASTERISK, l.ch)
 	case '/':
 		tok = l.newToken(token.SLASH, l.ch)
+	case '%':
+		tok = l.newToken(token.PERCENT, l.ch)
 	case '!':
 		if l.peekChar() == '=' {
 			ch := l.ch
@@ -111,6 +113,9 @@ func (l *Lexer) NextToken() token.Token {
 		tok = l.newToken(token.COLON, l.ch)
 	case ',':
 		tok = l.newToken(token.COMMA, l.ch)
+	case '"':
+		tok.Type = token.STRING
+		tok.Literal = l.readString()
 	case '#':
 		l.skipComment()
 		return l.NextToken() // Recursively get next token after comment
@@ -191,6 +196,27 @@ func (l *Lexer) skipComment() {
 	for l.ch != '\n' && l.ch != 0 {
 		l.readChar()
 	}
+}
+
+// readString reads a string literal (content between quotes, without the quotes)
+func (l *Lexer) readString() string {
+	// Move past the opening quote
+	l.readChar()
+
+	position := l.position
+	for l.ch != '"' && l.ch != 0 {
+		l.readChar()
+	}
+
+	// Extract the string content (without quotes)
+	str := l.input[position:l.position]
+
+	// Move past the closing quote (if we found one)
+	if l.ch == '"' {
+		l.readChar()
+	}
+
+	return str
 }
 
 // newToken creates a new token with the current line/column position

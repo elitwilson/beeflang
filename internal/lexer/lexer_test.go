@@ -35,6 +35,25 @@ func TestTokenizeIdentifiers(t *testing.T) {
 	assert.Equal(t, token.EOF, tok.Type)
 }
 
+func TestTokenizeStringLiterals(t *testing.T) {
+	tests := []struct {
+		input    string
+		expected string
+	}{
+		{`"hello"`, "hello"},
+		{`"Hello, Beef!"`, "Hello, Beef!"},
+		{`""`, ""},
+	}
+
+	for _, tt := range tests {
+		l := New(tt.input)
+		tok := l.NextToken()
+
+		assert.Equal(t, token.STRING, tok.Type, "Input: %s", tt.input)
+		assert.Equal(t, tt.expected, tok.Literal, "Input: %s", tt.input)
+	}
+}
+
 func TestTokenizeKeywords(t *testing.T) {
 	input := "cut praise beef genesis serve if else"
 	l := New(input)
