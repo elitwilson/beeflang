@@ -126,7 +126,7 @@ func (p *Parser) Errors() []string {
 
 func (p *Parser) parseStatement() ast.Statement {
 	switch p.curToken.Type {
-	case token.CUT:
+	case token.PREP:
 		return p.parseVariableDeclaration()
 	case token.SERVE:
 		return p.parseReturnStatement()

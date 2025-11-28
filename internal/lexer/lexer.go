@@ -7,7 +7,7 @@ import "github.com/elitwilson/beeflang/internal/token"
 // raw source code as a string and breaks it into "tokens" (meaningful chunks
 // like keywords, identifiers, numbers, operators).
 //
-// Example: "cut x = 42" becomes tokens [CUT, IDENT("x"), ASSIGN, INT("42")]
+// Example: "prep x = 42" becomes tokens [PREP, IDENT("x"), ASSIGN, INT("42")]
 //
 // The lexer uses a two-pointer technique for reading:
 // - position: points to the current character being examined

@@ -160,7 +160,7 @@ func TestParseInfixExpression(t *testing.T) {
 }
 
 func TestParseVariableDeclaration(t *testing.T) {
-	input := "cut x = 5"
+	input := "prep x = 5"
 	l := lexer.New(input)
 	p := New(l)
 
@@ -196,7 +196,7 @@ func TestParseReturnStatement(t *testing.T) {
 
 func TestParseIfStatement(t *testing.T) {
 	input := `if x > 5:
-   cut y = 10
+   prep y = 10
 beef`
 	l := lexer.New(input)
 	p := New(l)
@@ -243,9 +243,9 @@ func TestParseIfStatementOneLine(t *testing.T) {
 
 func TestParseIfElseStatement(t *testing.T) {
 	input := `if x < 5:
-   cut a = 1
+   prep a = 1
 else:
-   cut b = 2
+   prep b = 2
 beef`
 	l := lexer.New(input)
 	p := New(l)

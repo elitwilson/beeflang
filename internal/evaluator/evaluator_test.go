@@ -170,8 +170,8 @@ func TestEvalInfixExpression(t *testing.T) {
 
 func TestEvalVariableDeclaration(t *testing.T) {
 	input := `
-cut x = 42
-cut y = x + 8
+prep x = 42
+prep y = x + 8
 y
 `
 	result := testEval(input)
@@ -187,10 +187,10 @@ func TestEvalIdentifier(t *testing.T) {
 		input    string
 		expected int64
 	}{
-		{"cut a = 5; a", 5},
-		{"cut a = 5 * 5; a", 25},
-		{"cut a = 5; cut b = a; b", 5},
-		{"cut a = 5; cut b = a; cut c = a + b + 5; c", 15},
+		{"prep a = 5; a", 5},
+		{"prep a = 5 * 5; a", 25},
+		{"prep a = 5; prep b = a; b", 5},
+		{"prep a = 5; prep b = a; prep c = a + b + 5; c", 15},
 	}
 
 	for _, tt := range tests {
@@ -212,8 +212,8 @@ func TestEvalBlockStatement(t *testing.T) {
 	}{
 		// Block should evaluate all statements and return the last value
 		{`
-cut x = 5
-cut y = 10
+prep x = 5
+prep y = 10
 x + y
 `, 15},
 		// Single statement in a block
@@ -222,9 +222,9 @@ x + y
 `, 42},
 		// Multiple statements, last one is the result
 		{`
-cut a = 1
-cut b = 2
-cut c = 3
+prep a = 1
+prep b = 2
+prep c = 3
 c
 `, 3},
 	}
@@ -335,8 +335,8 @@ fortytwo()
 praise add(x, y):
    serve x + y
 beef
-cut a = add(1, 2)
-cut b = add(3, 4)
+prep a = add(1, 2)
+prep b = add(3, 4)
 a + b
 `, 10},
 	}
@@ -383,7 +383,7 @@ getValue()
 		{`
 praise earlyReturn():
    serve 10
-   cut x = 99
+   prep x = 99
    x
 beef
 earlyReturn()
@@ -416,37 +416,37 @@ func TestEvalWhileLoop(t *testing.T) {
 	}{
 		// Basic countdown loop
 		{`
-cut counter = 5
+prep counter = 5
 feast while counter > 0:
-   cut counter = counter - 1
+   counter = counter - 1
 beef
 counter
 `, 0},
 		// Loop with accumulator
 		{`
-cut sum = 0
-cut i = 1
+prep sum = 0
+prep i = 1
 feast while i <= 5:
-   cut sum = sum + i
-   cut i = i + 1
+   sum = sum + i
+   i = i + 1
 beef
 sum
 `, 15}, // 1+2+3+4+5 = 15
 		// Loop that doesn't execute
 		{`
-cut x = 0
+prep x = 0
 feast while x > 10:
-   cut x = x + 1
+   x = x + 1
 beef
 x
 `, 0},
 		// Nested variable mutation
 		{`
-cut result = 1
-cut count = 5
+prep result = 1
+prep count = 5
 feast while count > 0:
-   cut result = result * 2
-   cut count = count - 1
+   result = result * 2
+   count = count - 1
 beef
 result
 `, 32}, // 1 * 2^5 = 32

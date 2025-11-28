@@ -113,8 +113,8 @@ func TestInfixExpressionNode(t *testing.T) {
 }
 
 func TestVariableDeclarationNode(t *testing.T) {
-	// cut x = 42
-	tok := token.Token{Type: token.CUT, Literal: "cut", Line: 1, Column: 1}
+	// prep x = 42
+	tok := token.Token{Type: token.PREP, Literal: "cut", Line: 1, Column: 1}
 	varDecl := &VariableDeclaration{
 		Token: tok,
 		Name: &Identifier{
@@ -239,7 +239,7 @@ func TestBlockStatementNode(t *testing.T) {
 		Token: token.Token{Type: token.COLON, Literal: ":", Line: 1, Column: 1},
 		Statements: []Statement{
 			&VariableDeclaration{
-				Token: token.Token{Type: token.CUT, Literal: "cut"},
+				Token: token.Token{Type: token.PREP, Literal: "cut"},
 				Name:  &Identifier{Token: token.Token{Type: token.IDENT, Literal: "x"}, Value: "x"},
 				Value: &IntegerLiteral{Token: token.Token{Type: token.INT, Literal: "5"}, Value: 5},
 			},
