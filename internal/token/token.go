@@ -3,10 +3,12 @@ package token
 // TokenType represents the type of a token
 type TokenType string
 
-// Token represents a lexical token
+// Token represents a lexical token with position information
 type Token struct {
 	Type    TokenType
 	Literal string
+	Line    int // line number in source (for error reporting)
+	Column  int // column number in source (for error reporting)
 }
 
 // Token types

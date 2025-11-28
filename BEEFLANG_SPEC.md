@@ -158,34 +158,41 @@ beef
 
 ---
 
-## Brainstorm: Potential Keywords
+## Brainstorm 
+### Potential Keywords
 
-### Control Flow
+#### Control Flow
 - `sermon` - if statement
 - `heresy` - else
 - `sacrifice` - break
 - `repent` - continue
 
-### Data/Variables
+#### Data/Variables
 - `offering` - variable declaration
 - `sacred` - constant declaration
 - `herd` - array/list
 - `congregation` - object/struct
 - `scripture` - string type
 
-### Operators
+#### Operators
 - `smite` - not/negation
 - `unite` - and
 - `schism` - or
 
-### Functions
+#### Functions
 - `blessing` - return statement
 
-### Module System
+#### Module System
 - `summon` - import/include
 - `banish` - delete/remove
 
-### Other
+#### Other
 - `genesis` - main/entry point
 - `amen` - statement terminator
 - `emptiness` or `famine` - null/void value
+
+### Other Ideas
+
+#### Immutable vs Mutable variables
+- Mutable: `cut` (v1)
+- Immutable: `pack` (v2 - later)

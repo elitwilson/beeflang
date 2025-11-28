@@ -194,6 +194,62 @@ beeflang/
 └── BEEFLANG_SPEC.md       # Language specification
 ```
 
+## Go Best Practices for Interpreter Development
+
+### Lexer
+- **Track line/column from day one**: Add `line` and `column` fields to lexer struct and update them as you read characters. You'll thank yourself when debugging syntax errors.
+- **Character-by-character control**: Don't use `bufio.Scanner` - we need finer control. Manual position tracking works better.
+- **Dump tokens mode**: Add a debug mode that prints all tokens. Invaluable for debugging lexer issues.
+
+### Parser
+- **Switch statements**: Go's `switch` is perfect for handling different token types. Use it liberally.
+- **Pratt parsing**: Consider this technique for expression parsing (we'll learn it through TDD)
+
+### Object/Value System
+- **Interface over `interface{}`**: Define an `Object` interface with concrete types (`Integer`, `Boolean`, etc.) instead of raw `interface{}`. Gives type safety while maintaining dynamic typing.
+
+### Token Types
+- **Readable strings**: We use string constants instead of `iota` for token types. This makes debug output more readable, which is important for learning. We can optimize later if needed.
+
+## Code Documentation Philosophy
+
+Since this is a **learning project**, we balance educational comments with clean code:
+
+### When to Add Educational Comments
+
+**DO add detailed comments for:**
+- Core struct definitions (Lexer, Parser, AST nodes, etc.) - explain purpose and key fields
+- Non-obvious algorithms (Pratt parsing, operator precedence, etc.)
+- Design decisions that might seem strange to beginners
+- Relationships between components (how lexer feeds parser, etc.)
+
+**DON'T add comments for:**
+- Obvious code (simple getters, trivial functions)
+- Implementation details that are self-explanatory
+- Every single line - let the code speak when it can
+
+**Example:**
+```go
+// Lexer performs lexical analysis (tokenization) on source code.
+// It reads the input string character-by-character and groups characters
+// into tokens (keywords, identifiers, operators, literals, etc.).
+//
+// The lexer maintains position tracking for error reporting:
+// - position: current character position
+// - readPosition: next character to read (always position + 1)
+// - line/column: for helpful error messages like "syntax error at line 5, column 12"
+type Lexer struct {
+    input        string
+    position     int
+    readPosition int
+    ch           byte
+    line         int
+    column       int
+}
+```
+
+This approach helps you understand *why* things work, not just *what* they do.
+
 ## Development Notes
 
 - This is a **learning project** - keep it simple
