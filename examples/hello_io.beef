@@ -1,0 +1,5 @@
+wrangle io
+
+io.preach("Hello from the Church of Beef!")
+io.preach(42)
+io.preach("The answer is: ")

@@ -118,6 +118,7 @@ func (l *Lexer) NextToken() token.Token {
 	case '"':
 		tok.Type = token.STRING
 		tok.Literal = l.readString()
+		return tok // Early return
 	case '#':
 		l.skipComment()
 		return l.NextToken() // Recursively get next token after comment
