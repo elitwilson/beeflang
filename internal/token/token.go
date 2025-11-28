@@ -54,7 +54,7 @@ const (
 	FEAST_WHILE TokenType = "FEAST_WHILE" // while loop
 	IF          TokenType = "IF"
 	ELSE        TokenType = "ELSE"
-	CUT         TokenType = "CUT"     // variable declaration
+	PREP        TokenType = "PREP"    // variable declaration
 	SERVE       TokenType = "SERVE"   // return
 	GENESIS     TokenType = "GENESIS" // main/entry point
 	TRUE        TokenType = "TRUE"
@@ -71,7 +71,7 @@ var keywords = map[string]TokenType{
 	"while":   FEAST_WHILE,
 	"if":      IF,
 	"else":    ELSE,
-	"cut":     CUT,
+	"prep":    PREP,
 	"serve":   SERVE,
 	"genesis": GENESIS,
 	"true":    TRUE,

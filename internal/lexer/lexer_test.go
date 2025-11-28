@@ -55,14 +55,14 @@ func TestTokenizeStringLiterals(t *testing.T) {
 }
 
 func TestTokenizeKeywords(t *testing.T) {
-	input := "cut praise beef genesis serve if else"
+	input := "prep praise beef genesis serve if else"
 	l := New(input)
 
 	expectedTokens := []struct {
 		expectedType    token.TokenType
 		expectedLiteral string
 	}{
-		{token.CUT, "cut"},
+		{token.PREP, "prep"},
 		{token.PRAISE, "praise"},
 		{token.BEEF, "beef"},
 		{token.GENESIS, "genesis"},
@@ -203,14 +203,14 @@ func TestEOFToken(t *testing.T) {
 
 func TestSimpleVariableDeclaration(t *testing.T) {
 	// Integration test: complete statement
-	input := "cut x = 42"
+	input := "prep x = 42"
 	l := New(input)
 
 	expectedTokens := []struct {
 		expectedType    token.TokenType
 		expectedLiteral string
 	}{
-		{token.CUT, "cut"},
+		{token.PREP, "prep"},
 		{token.IDENT, "x"},
 		{token.ASSIGN, "="},
 		{token.INT, "42"},
@@ -226,8 +226,8 @@ func TestSimpleVariableDeclaration(t *testing.T) {
 
 func TestTrackLineAndColumn(t *testing.T) {
 	// Critical for error messages
-	input := `cut x = 42
-cut y = 5`
+	input := `prep x = 42
+prep y = 5`
 	l := New(input)
 
 	// First line tokens
@@ -238,6 +238,6 @@ cut y = 5`
 	assert.Equal(t, 1, tok.Line, "first line should be 1")
 
 	// Second line tokens
-	tok = l.NextToken() // cut on line 2
+	tok = l.NextToken() // prep on line 2
 	assert.Equal(t, 2, tok.Line, "second line should be 2")
 }
