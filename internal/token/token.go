@@ -13,54 +13,54 @@ type Token struct {
 
 // Token types
 const (
-	ILLEGAL = "ILLEGAL"
-	EOF     = "EOF"
+	ILLEGAL TokenType = "ILLEGAL"
+	EOF     TokenType = "EOF"
 
 	// Identifiers and literals
-	IDENT = "IDENT" // variable names, function names
-	INT   = "INT"   // integer literals
+	IDENT TokenType = "IDENT" // variable names, function names
+	INT   TokenType = "INT"   // integer literals
 
 	// Operators
-	ASSIGN   = "="
-	PLUS     = "+"
-	MINUS    = "-"
-	ASTERISK = "*"
-	SLASH    = "/"
-	PERCENT  = "%"
+	ASSIGN   TokenType = "="
+	PLUS     TokenType = "+"
+	MINUS    TokenType = "-"
+	ASTERISK TokenType = "*"
+	SLASH    TokenType = "/"
+	PERCENT  TokenType = "%"
 
 	// Comparison operators
-	EQ     = "=="
-	NOT_EQ = "!="
-	LT     = "<"
-	GT     = ">"
-	LTE    = "<="
-	GTE    = ">="
+	EQ     TokenType = "=="
+	NOT_EQ TokenType = "!="
+	LT     TokenType = "<"
+	GT     TokenType = ">"
+	LTE    TokenType = "<="
+	GTE    TokenType = ">="
 
 	// Logical operators
-	AND = "&&"
-	OR  = "||"
-	NOT = "!"
+	AND TokenType = "&&"
+	OR  TokenType = "||"
+	NOT TokenType = "!"
 
 	// Delimiters
-	LPAREN = "("
-	RPAREN = ")"
-	COLON  = ":"
-	COMMA  = ","
+	LPAREN TokenType = "("
+	RPAREN TokenType = ")"
+	COLON  TokenType = ":"
+	COMMA  TokenType = ","
 
 	// Keywords
-	PRAISE      = "PRAISE"      // function declaration
-	BEEF        = "BEEF"        // block terminator
-	FEAST_WHILE = "FEAST_WHILE" // while loop
-	IF          = "IF"
-	ELSE        = "ELSE"
-	CUT         = "CUT"    // variable declaration
-	SERVE       = "SERVE"  // return
-	GENESIS     = "GENESIS" // main/entry point
-	TRUE        = "TRUE"
-	FALSE       = "FALSE"
-	AND_WORD    = "AND" // 'and' keyword
-	OR_WORD     = "OR"  // 'or' keyword
-	NOT_WORD    = "NOT" // 'not' keyword
+	PRAISE      TokenType = "PRAISE"      // function declaration
+	BEEF        TokenType = "BEEF"        // block terminator
+	FEAST_WHILE TokenType = "FEAST_WHILE" // while loop
+	IF          TokenType = "IF"
+	ELSE        TokenType = "ELSE"
+	CUT         TokenType = "CUT"     // variable declaration
+	SERVE       TokenType = "SERVE"   // return
+	GENESIS     TokenType = "GENESIS" // main/entry point
+	TRUE        TokenType = "TRUE"
+	FALSE       TokenType = "FALSE"
+	AND_WORD    TokenType = "AND" // 'and' keyword
+	OR_WORD     TokenType = "OR"  // 'or' keyword
+	NOT_WORD    TokenType = "NOT" // 'not' keyword
 )
 
 var keywords = map[string]TokenType{
