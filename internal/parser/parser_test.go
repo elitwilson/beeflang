@@ -46,6 +46,51 @@ func TestParseIdentifier(t *testing.T) {
 	assert.Equal(t, "foobar", ident.Value)
 }
 
+func TestParseBooleanLiteral(t *testing.T) {
+	tests := []struct {
+		input    string
+		expected bool
+	}{
+		{"true", true},
+		{"false", false},
+	}
+
+	for _, tt := range tests {
+		l := lexer.New(tt.input)
+		p := New(l)
+
+		program := p.ParseProgram()
+		checkParserErrors(t, p)
+
+		assert.Len(t, program.Statements, 1, "program should have 1 statement")
+
+		stmt, ok := program.Statements[0].(*ast.ExpressionStatement)
+		assert.True(t, ok, "statement should be *ast.ExpressionStatement")
+
+		boolLiteral, ok := stmt.Expression.(*ast.BooleanLiteral)
+		assert.True(t, ok, "expression should be *ast.BooleanLiteral")
+		assert.Equal(t, tt.expected, boolLiteral.Value)
+	}
+}
+
+func TestParseStringLiteral(t *testing.T) {
+	input := `"Hello, Beef!"`
+	l := lexer.New(input)
+	p := New(l)
+
+	program := p.ParseProgram()
+	checkParserErrors(t, p)
+
+	assert.Len(t, program.Statements, 1, "program should have 1 statement")
+
+	stmt, ok := program.Statements[0].(*ast.ExpressionStatement)
+	assert.True(t, ok, "statement should be *ast.ExpressionStatement")
+
+	strLiteral, ok := stmt.Expression.(*ast.StringLiteral)
+	assert.True(t, ok, "expression should be *ast.StringLiteral")
+	assert.Equal(t, "Hello, Beef!", strLiteral.Value)
+}
+
 func TestParsePrefixExpression(t *testing.T) {
 	tests := []struct {
 		input    string
