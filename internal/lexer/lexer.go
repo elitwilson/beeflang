@@ -113,6 +113,8 @@ func (l *Lexer) NextToken() token.Token {
 		tok = l.newToken(token.COLON, l.ch)
 	case ',':
 		tok = l.newToken(token.COMMA, l.ch)
+	case '.':
+		tok = l.newToken(token.DOT, l.ch)
 	case '"':
 		tok.Type = token.STRING
 		tok.Literal = l.readString()

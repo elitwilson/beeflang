@@ -47,6 +47,7 @@ const (
 	RPAREN TokenType = ")"
 	COLON  TokenType = ":"
 	COMMA  TokenType = ","
+	DOT    TokenType = "."
 
 	// Keywords
 	PRAISE      TokenType = "PRAISE"      // function declaration
@@ -57,6 +58,8 @@ const (
 	PREP        TokenType = "PREP"    // variable declaration
 	SERVE       TokenType = "SERVE"   // return
 	GENESIS     TokenType = "GENESIS" // main/entry point
+	WRANGLE     TokenType = "WRANGLE" // import module
+	HERD        TokenType = "HERD"    // module keyword
 	TRUE        TokenType = "TRUE"
 	FALSE       TokenType = "FALSE"
 	AND_WORD    TokenType = "AND" // 'and' keyword
@@ -74,6 +77,8 @@ var keywords = map[string]TokenType{
 	"prep":    PREP,
 	"serve":   SERVE,
 	"genesis": GENESIS,
+	"wrangle": WRANGLE,
+	"herd":    HERD,
 	"true":    TRUE,
 	"false":   FALSE,
 	"and":     AND_WORD,
