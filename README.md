@@ -1,10 +1,10 @@
 # Beeflang 🥩
 
-A Turing-complete programming language honoring the Church of Beef
+The first Beef Oriented Programming Language, in honor of the Church of Beef
 
 ## What is this?
 
-Beeflang is a **fully functional, Turing-complete** interpreted programming language built from scratch in Go as a learning project. It features beef-themed keywords, Python-like syntax, and supports functions, loops, conditionals, and recursion.
+Beeflang is a **fully functional, Turing-complete** interpreted programming language built from scratch in Go. It honors the congregation through a Python-like syntax, and supports functions, loops, and conditionals. 
 
 ## Example Programs
 
