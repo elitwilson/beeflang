@@ -201,13 +201,19 @@ func evalIntegerInfixExpression(operator string, left, right object.Object) obje
 
 // evalStringInfixExpression handles string operations
 func evalStringInfixExpression(operator string, left, right object.Object) object.Object {
-	if operator != "+" {
-		return object.NULL
-	}
-
 	leftVal := left.(*object.String).Value
 	rightVal := right.(*object.String).Value
-	return &object.String{Value: leftVal + rightVal}
+
+	switch operator {
+	case "+":
+		return &object.String{Value: leftVal + rightVal}
+	case "==":
+		return nativeBoolToBooleanObject(leftVal == rightVal)
+	case "!=":
+		return nativeBoolToBooleanObject(leftVal != rightVal)
+	default:
+		return object.NULL
+	}
 }
 
 // nativeBoolToBooleanObject converts a Go bool to a Boolean object
